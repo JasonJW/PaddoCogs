@@ -59,28 +59,12 @@ class Away:
             to_delete.append(msg)
             print('afk off')
         await self.bot.say(msg)
-
-        # def check(m):
-        #     if text in m.content:
-        #         return True
-        #     elif m == ctx.message:
-        #         return True
-        #     else:
-        #         return False
+        await asyncio.sleep(5)
 
         if not has_permissions:
             await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
             return
 
-        tries_left = 5
-        tmp = context.message
-
-        # while tries_left and len(to_delete) - 1 < number:
-        #     async for message in self.bot.logs_from(channel, limit=10, before=tmp):
-        #         if len(to_delete) - 1 < number and check(message):
-        #             to_delete.append(message)
-        #         tmp = message
-        #     tries_left -= 1
         try:
             await self.slow_deletion(to_delete)
             print('messages deleted')
