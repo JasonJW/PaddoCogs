@@ -40,7 +40,7 @@ class Away:
         author = context.message.author
         to_delete = [context.message]
         channel = context.message.channel
-        author = ctx.message.author
+        author = context.message.author
         is_bot = self.bot.user.bot
         has_permissions = channel.permissions_for(server.me).manage_messages
         if author.id not in self.data: #author *is not* afk
@@ -72,7 +72,7 @@ class Away:
             return
 
         tries_left = 5
-        tmp = ctx.message
+        tmp = context.message
 
         # while tries_left and len(to_delete) - 1 < number:
         #     async for message in self.bot.logs_from(channel, limit=10, before=tmp):
