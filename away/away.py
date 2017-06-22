@@ -94,6 +94,12 @@ class Away:
         #     #added manage messages permission
         #     await self.bot.say('Could not tidy up messages.')
 
+    async def slow_deletion(self, messages):
+        for message in messages:
+            try:
+                await self.bot.delete_message(message)
+            except:
+                pass
 
 def check_folder():
     if not os.path.exists('data/away'):
