@@ -1,5 +1,6 @@
 import os
 import discord
+import asyncio
 from discord.ext import commands
 from cogs.utils.dataIO import dataIO
 
@@ -55,7 +56,7 @@ class Away:
             msg = 'You\'re now set as away.'
         dataIO.save_json('data/away/away.json', self.data)
         await self.bot.say(msg)
-        sleep(10)
+        await asyncio.sleep(5)
         try:
             await  client.purge_from(channel, limit=1, check=is_me)
         except:
