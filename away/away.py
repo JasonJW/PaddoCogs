@@ -51,18 +51,21 @@ class Away:
                 self.data[context.message.author.id]['MESSAGE'] = True
             msg = 'You\'re now set as away.'
             to_delete.append(msg)
+            print('afk on')
         else: #author **is** afk
             del self.data[author.id]
             msg = 'You\'re now back.'
             to_delete.append(msg)
+            print('afk off')
+        await self.bot.say(msg)
 
-        def check(m):
-            if text in m.content:
-                return True
-            elif m == ctx.message:
-                return True
-            else:
-                return False
+        # def check(m):
+        #     if text in m.content:
+        #         return True
+        #     elif m == ctx.message:
+        #         return True
+        #     else:
+        #         return False
 
         if not has_permissions:
             await self.bot.say("I am not allowed to delete messages.")
@@ -71,18 +74,19 @@ class Away:
         tries_left = 5
         tmp = ctx.message
 
-        while tries_left and len(to_delete) - 1 < number:
-            async for message in self.bot.logs_from(channel, limit=100,
-                                                    before=tmp):
-                if len(to_delete) - 1 < number and check(message):
-                    to_delete.append(message)
-                tmp = message
-            tries_left -= 1
+        # while tries_left and len(to_delete) - 1 < number:
+        #     async for message in self.bot.logs_from(channel, limit=10, before=tmp):
+        #         if len(to_delete) - 1 < number and check(message):
+        #             to_delete.append(message)
+        #         tmp = message
+        #     tries_left -= 1
+        try:
             await self.slow_deletion(to_delete)
-
+            print('messages deleted')
+        except:
+            print('messages not deleted')
         dataIO.save_json('data/away/away.json', self.data)
-        await self.bot.say(msg)
-        await asyncio.sleep(5)
+
         # try:
         #     await  client.purge_from(channel, limit=1, check=is_me)
         # except:
