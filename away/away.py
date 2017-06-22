@@ -38,32 +38,39 @@ class Away:
     async def _away(self, context, *message: str):
         """Tell the bot you're away or back."""
         author = context.message.author
-        to_delete = [context.message]
+        to_delete = []
         channel = context.message.channel
         server = context.message.server
         author = context.message.author
         is_bot = self.bot.user.bot
         has_permissions = channel.permissions_for(server.me).manage_messages
+        to_delete.append(context.message)
         if author.id not in self.data: #author *is not* afk
             self.data[context.message.author.id] = {}
             if len(str(message)) < 256:
                 self.data[context.message.author.id]['MESSAGE'] = ' '.join(context.message.clean_content.split()[1:])
             else:
                 self.data[context.message.author.id]['MESSAGE'] = True
-            msg = 'You\'re now set as away.'
-            to_delete.append(msg)
+            botmsg = 'You\'re now set as away.'
             print('afk on')
         else: #author **is** afk
             del self.data[author.id]
-            msg = 'You\'re now back.'
+            botmsg = 'You\'re now back.'
             to_delete.append(msg)
             print('afk off')
-        await self.bot.say(msg)
+        await self.bot.say(botmsg)
         await asyncio.sleep(5)
 
-        if not has_permissions:
-            await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
-            return
+        botlog = self.bot.logs_from(channel, limit=10, before=context.message):
+            for m in botlog:
+                if botmsg = m:
+                    to_delete.append(m)
+                else:
+                    print(m+' is not '+botmsg)
+
+        # if not has_permissions:
+        #     await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
+        #     return
 
         try:
             await self.slow_deletion(to_delete)
