@@ -40,9 +40,10 @@ class Away:
         author = context.message.author
         to_delete = [context.message]
         channel = context.message.channel
+        server = context.message.server
         author = context.message.author
         is_bot = self.bot.user.bot
-        has_permissions = channel.permissions_for(context.server.me).manage_messages
+        has_permissions = channel.permissions_for(server.me).manage_messages
         if author.id not in self.data: #author *is not* afk
             self.data[context.message.author.id] = {}
             if len(str(message)) < 256:
