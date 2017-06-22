@@ -38,29 +38,56 @@ class Away:
     async def _away(self, context, *message: str):
         """Tell the bot you're away or back."""
         author = context.message.author
-        m = context.message
+        to_delete = [context.message]
         channel = context.message.channel
-        if author.id in self.data:
-            del self.data[author.id]
-            msg = 'You\'re now back.'
-            try:
-                discord.Client.delete_message(m)
-            except:
-                print('Could not delete message')
-        else:
+        author = ctx.message.author
+        is_bot = self.bot.user.bot
+        has_permissions = channel.permissions_for(server.me).manage_messages
+        if author.id not in self.data: #author *is not* afk
             self.data[context.message.author.id] = {}
             if len(str(message)) < 256:
                 self.data[context.message.author.id]['MESSAGE'] = ' '.join(context.message.clean_content.split()[1:])
             else:
                 self.data[context.message.author.id]['MESSAGE'] = True
             msg = 'You\'re now set as away.'
+            to_delete.append(msg)
+        else: #author **is** afk
+            del self.data[author.id]
+            msg = 'You\'re now back.'
+            to_delete.append(msg)
+
+        def check(m):
+            if text in m.content:
+                return True
+            elif m == ctx.message:
+                return True
+            else:
+                return False
+
+        if not has_permissions:
+            await self.bot.say("I am not allowed to delete messages.")
+            return
+
+        tries_left = 5
+        tmp = ctx.message
+
+        while tries_left and len(to_delete) - 1 < number:
+            async for message in self.bot.logs_from(channel, limit=100,
+                                                    before=tmp):
+                if len(to_delete) - 1 < number and check(message):
+                    to_delete.append(message)
+                tmp = message
+            tries_left -= 1
+            await self.slow_deletion(to_delete)
+
         dataIO.save_json('data/away/away.json', self.data)
         await self.bot.say(msg)
         await asyncio.sleep(5)
-        try:
-            await  client.purge_from(channel, limit=1, check=is_me)
-        except:
-            await self.bot.say('Could not tidy up messages.')
+        # try:
+        #     await  client.purge_from(channel, limit=1, check=is_me)
+        # except:
+        #     #added manage messages permission
+        #     await self.bot.say('Could not tidy up messages.')
 
 
 def check_folder():
