@@ -37,9 +37,15 @@ class Away:
     async def _away(self, context, *message: str):
         """Tell the bot you're away or back."""
         author = context.message.author
+        m = context.message
+        channel = context.message.channel
         if author.id in self.data:
             del self.data[author.id]
             msg = 'You\'re now back.'
+            try:
+                discord.Client.delete_message(m)
+            except:
+                print('Could not delete message')
         else:
             self.data[context.message.author.id] = {}
             if len(str(message)) < 256:
@@ -49,6 +55,11 @@ class Away:
             msg = 'You\'re now set as away.'
         dataIO.save_json('data/away/away.json', self.data)
         await self.bot.say(msg)
+        sleep(10)
+        try:
+            await  client.purge_from(channel, limit=1, check=is_me)
+        except:
+            await self.bot.say('Could not tidy up messages.')
 
 
 def check_folder():
