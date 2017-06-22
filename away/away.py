@@ -42,7 +42,7 @@ class Away:
         channel = context.message.channel
         author = context.message.author
         is_bot = self.bot.user.bot
-        has_permissions = channel.permissions_for(server.me).manage_messages
+        has_permissions = channel.permissions_for(context.server.me).manage_messages
         if author.id not in self.data: #author *is not* afk
             self.data[context.message.author.id] = {}
             if len(str(message)) < 256:
@@ -68,7 +68,7 @@ class Away:
         #         return False
 
         if not has_permissions:
-            await self.bot.say("I am not allowed to delete messages.")
+            await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
             return
 
         tries_left = 5
