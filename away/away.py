@@ -63,23 +63,12 @@ class Away:
         async for bmsg in self.bot.logs_from(channel, limit=5):
             if bmsg.content == botmsg:
                 to_delete.append(bmsg)
-
-        # if not has_permissions:
-        #     await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
-        #     return
-
         try:
             await self.slow_deletion(to_delete)
             print('messages deleted')
         except:
             print('messages not deleted')
         dataIO.save_json('data/away/away.json', self.data)
-
-        # try:
-        #     await  client.purge_from(channel, limit=1, check=is_me)
-        # except:
-        #     #added manage messages permission
-        #     await self.bot.say('Could not tidy up messages.')
 
     async def slow_deletion(self, messages):
         for message in messages:
