@@ -61,12 +61,8 @@ class Away:
         await self.bot.say(botmsg)
         await asyncio.sleep(5)
 
-        botlog = self.bot.logs_from(channel, limit=10, before=context.message):
-            for m in botlog:
-                if botmsg = m:
-                    to_delete.append(m)
-                else:
-                    print(m+' is not '+botmsg)
+        async for botmsg in self.bot.logs_from(channel, limit=number+1):
+            to_delete.append(botmsg)
 
         # if not has_permissions:
         #     await self.bot.say('I am not allowed to delete messages. Please advise your server administrator.')
