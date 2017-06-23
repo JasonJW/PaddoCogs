@@ -61,7 +61,7 @@ class Away:
         await self.bot.say(botmsg)
         await asyncio.sleep(5)
 
-        async for botmsg in self.bot.logs_from(channel, limit=number+1):
+        async for botmsg in self.bot.logs_from(channel, limit=2):
             to_delete.append(botmsg)
 
         # if not has_permissions:
