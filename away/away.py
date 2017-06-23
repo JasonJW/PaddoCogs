@@ -56,7 +56,6 @@ class Away:
         else: #author **is** afk
             del self.data[author.id]
             botmsg = 'You\'re now back.'
-            to_delete.append(msg)
             print('afk off')
         await self.bot.say(botmsg)
         await asyncio.sleep(5)
